@@ -1,11 +1,14 @@
 package com.skcraft.playblock.util;
 
-import net.minecraft.util.StatCollector;
+
+import net.minecraft.util.text.translation.I18n;
+
+import static net.minecraft.util.text.translation.I18n.translateToLocal;
 
 public class StringUtils {
 
     public static String translate(String unlocalized, boolean prefix) {
-        return StatCollector.translateToLocal((prefix ? "playblock." : "") + unlocalized);
+        return  I18n.translateToLocal((prefix ? "playblock." : "") + unlocalized);
     }
 
     public static String translate(String unlocalized) {

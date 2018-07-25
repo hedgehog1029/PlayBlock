@@ -1,5 +1,6 @@
 package com.skcraft.playblock.queue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,8 @@ import com.skcraft.playblock.projector.GuiProjectorQueueSlot;
 import com.skcraft.playblock.util.GuiScrollbar;
 import com.skcraft.playblock.util.StringUtils;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * The GUI for the media queue.
@@ -64,7 +65,7 @@ public class GuiQueue extends GuiScreen {
         buttonList.add(clearButton = new GuiButton(3, left + 4, top + 100, 42, 20, StringUtils.translate("gui.clear")));
         removeButton.enabled = false;
 
-        uriField = new GuiTextField(fontRendererObj, left + 35, top + 17, 157, fontRendererObj.FONT_HEIGHT + 5);
+        uriField = new GuiTextField(1, fontRendererObj, left + 35, top + 17, 157, fontRendererObj.FONT_HEIGHT + 5);
         uriField.setVisible(true);
         uriField.setMaxStringLength(100);
         uriField.setEnableBackgroundDrawing(true);
@@ -130,7 +131,11 @@ public class GuiQueue extends GuiScreen {
 
     @Override
     protected void keyTyped(char key, int par2) {
-        super.keyTyped(key, par2);
+        try {
+            super.keyTyped(key, par2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (uriField.isFocused()) {
             uriField.textboxKeyTyped(key, par2);
             uri = uriField.getText();
@@ -145,7 +150,11 @@ public class GuiQueue extends GuiScreen {
 
     @Override
     protected void mouseClicked(int x, int y, int buttonClicked) {
-        super.mouseClicked(x, y, buttonClicked);
+        try {
+            super.mouseClicked(x, y, buttonClicked);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         int unseenSlots = slots.size() - 7;
         int startIndex = (int) (scrollbar.getCurrentScroll() * unseenSlots + 0.5);
@@ -162,7 +171,11 @@ public class GuiQueue extends GuiScreen {
 
     @Override
     public void handleMouseInput() {
-        super.handleMouseInput();
+        try {
+            super.handleMouseInput();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         scrollbar.handleMouseInput(slots.size(), 7);
     }
 

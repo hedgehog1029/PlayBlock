@@ -43,7 +43,7 @@ public class GuiSearch extends GuiScreen {
 
         buttonList.add(searchButton = new GuiButton(0, left + 179, top + 14, 43, 20, StringUtils.translate("gui.search")));
 
-        queryField = new GuiTextField(fontRendererObj, left + 38, top + 19, 150, fontRendererObj.FONT_HEIGHT + 5);
+        queryField = new GuiTextField(1, fontRendererObj, left + 38, top + 19, 150, fontRendererObj.FONT_HEIGHT + 5);
         queryField.setVisible(true);
         queryField.setMaxStringLength(100);
         queryField.setEnableBackgroundDrawing(true);
@@ -91,13 +91,21 @@ public class GuiSearch extends GuiScreen {
 
     @Override
     public void handleMouseInput() {
-        super.handleMouseInput();
+        try {
+            super.handleMouseInput();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         scrollbar.handleMouseInput(searchResults.size(), SHOWN_RESULTS);
     }
 
     @Override
     protected void keyTyped(char key, int keycode) {
-        super.keyTyped(key, keycode);
+        try {
+            super.keyTyped(key, keycode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (queryField.isFocused()) {
             queryField.textboxKeyTyped(key, keycode);
             if (keycode == 28 || keycode == 156) {
@@ -108,7 +116,11 @@ public class GuiSearch extends GuiScreen {
 
     @Override
     protected void mouseClicked(int x, int y, int buttonClicked) {
-        super.mouseClicked(x, y, buttonClicked);
+        try {
+            super.mouseClicked(x, y, buttonClicked);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         int unseenSlots = searchResults.size() - SHOWN_RESULTS;
         int startIndex = (int) (scrollbar.getCurrentScroll() * unseenSlots + 0.5);

@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import org.apache.logging.log4j.Level;
@@ -23,12 +24,12 @@ import com.sk89q.forge.TileEntityPayload;
 import com.skcraft.playblock.network.PlayBlockPayload;
 import com.skcraft.playblock.projector.TileEntityProjector;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Handles packets for PlayBlock.
@@ -41,7 +42,7 @@ public class PacketHandler {
         World world = Minecraft.getMinecraft().theWorld;
         EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
         try {
-            ByteBufInputStream in = new ByteBufInputStream(evt.packet.payload());
+            ByteBufInputStream in = new ByteBufInputStream(evt.getPacket().payload());
 
             // Read the container
             PlayBlockPayload container = new PlayBlockPayload();
@@ -53,7 +54,7 @@ public class PacketHandler {
                 handleTilePayload(world, entityPlayer, in);
                 break;
             case TILE_ENTITY_NBT:
-                handleNetworkedNBT(world, evt.packet.payload());
+                handleNetworkedNBT(world, evt.getPacket().payload());
             }
         } catch (IOException e) {
             PlayBlock.log(Level.WARN, "Failed to read packet data from " + entityPlayer.getDisplayName(), e);
@@ -62,7 +63,7 @@ public class PacketHandler {
 
     @SubscribeEvent
     public void onReceiveServer(FMLNetworkEvent.ServerCustomPacketEvent evt) {
-        EntityPlayer entityPlayer = ((NetHandlerPlayServer) evt.handler).playerEntity;
+        EntityPlayer entityPlayer = ((NetHandlerPlayServer) evt.getHandler()).playerEntity;
         World world;
 
         // Get the world
@@ -74,7 +75,7 @@ public class PacketHandler {
         }
 
         try {
-            ByteBufInputStream in = new ByteBufInputStream(evt.packet.payload());
+            ByteBufInputStream in = new ByteBufInputStream(evt.getPacket().payload());
 
             // Read the container
             PlayBlockPayload container = new PlayBlockPayload();
@@ -86,7 +87,7 @@ public class PacketHandler {
                 handleTilePayload(world, entityPlayer, in);
                 break;
             case TILE_ENTITY_NBT:
-                handleNetworkedNBT(world, evt.packet.payload());
+                handleNetworkedNBT(world, evt.getPacket().payload());
             }
         } catch (IOException e) {
             PlayBlock.log(Level.WARN, "Failed to read packet data from " + entityPlayer.getDisplayName(), e);
@@ -105,7 +106,7 @@ public class PacketHandler {
         // We need to check if the chunk exists, otherwise an update packet
         // could be used to overload the server by loading/generating chunks
         if (world.blockExists(x, y, z)) {
-            TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
             if (tile instanceof PayloadReceiver) {
                 ((PayloadReceiver) tile).readPayload(player, in);
@@ -122,7 +123,7 @@ public class PacketHandler {
         int z = tag.getInteger("z");
 
         if (world.blockExists(x, y, z)) {
-            TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
             if (tile instanceof TileEntityProjector) {
                 TileEntityProjector projector = (TileEntityProjector) tile;

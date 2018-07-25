@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import com.skcraft.playblock.PlayBlock;
@@ -15,8 +17,8 @@ import com.skcraft.playblock.PlayBlockCreativeTab;
 import com.skcraft.playblock.queue.ExposedQueue;
 import com.skcraft.playblock.util.StringUtils;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRemote extends Item {
 
@@ -38,7 +40,7 @@ public class ItemRemote extends Item {
         if (world.isRemote) {
             ExposedQueue queuable = getLinked(world, item);
             if (queuable == null) {
-                player.addChatMessage(new ChatComponentText("Not linked."));
+                player.addChatMessage(new TextComponentString("Not linked."));
             } else {
                 PlayBlock.getClientRuntime().showRemoteGui(player, queuable);
             }
@@ -49,7 +51,7 @@ public class ItemRemote extends Item {
 
     @Override
     public boolean onItemUseFirst(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity == null || !(tileEntity instanceof ExposedQueue)) {
             return false;
         }
@@ -61,12 +63,12 @@ public class ItemRemote extends Item {
         }
 
         NBTTagCompound tag = item.getTagCompound();
-        item.getTagCompound().setInteger("dim", world.provider.dimensionId);
+        item.getTagCompound().setInteger("dim", world.provider.getDimension());
         item.getTagCompound().setInteger("x", x);
         item.getTagCompound().setInteger("y", y);
         item.getTagCompound().setInteger("z", z);
 
-        player.addChatMessage(new ChatComponentText("Remote linked!"));
+        player.addChatMessage(new TextComponentString("Remote linked!"));
 
         return true;
     }
@@ -109,11 +111,11 @@ public class ItemRemote extends Item {
         int y = item.getTagCompound().getInteger("y");
         int z = item.getTagCompound().getInteger("z");
 
-        if (world.provider.dimensionId != dim) {
+        if (world.provider.getDimension() != dim) {
             return null;
         }
 
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
         if (tileEntity == null || !(tileEntity instanceof ExposedQueue)) {
             return null;
         }

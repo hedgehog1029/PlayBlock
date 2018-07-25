@@ -15,8 +15,8 @@ import com.skcraft.playblock.player.MediaManager;
 import com.skcraft.playblock.util.GuiSlider;
 import com.skcraft.playblock.util.StringUtils;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * The options GUI.
