@@ -4,6 +4,7 @@ import com.sk89q.forge.ResponseTracker;
 import com.skcraft.playblock.media.MediaResolver;
 import com.skcraft.playblock.projector.BlockProjector;
 import com.skcraft.playblock.projector.ItemRemote;
+import com.skcraft.playblock.projector.ModItemBlock;
 import com.skcraft.playblock.projector.TileEntityProjector;
 import com.skcraft.playblock.queue.ExposedQueue;
 import com.skcraft.playblock.queue.QueueManager;
@@ -32,10 +33,19 @@ public class SharedRuntime {
     private QueueSupervisor queueSupervisor;
     private MediaResolver mediaResolver;
     private SharedConfiguration config;
+    public FMLEventChannel networkWrapper;
 
     public static Block blockProjector = null;
     public static Item itemRemote = null;
-    public static FMLEventChannel networkWrapper;
+    public static Item itemProjector = null;
+
+    public static FMLEventChannel getNetworkWrapper() {
+        return PlayBlock.getRuntime().getSidedNetworkWrapper();
+    }
+
+    public FMLEventChannel getSidedNetworkWrapper() {
+        return networkWrapper;
+    }
 
     /**
      * Get the response tracker.
@@ -66,6 +76,7 @@ public class SharedRuntime {
 
         blockProjector = new BlockProjector();
         itemRemote = new ItemRemote();
+        itemProjector = new ModItemBlock(blockProjector);
 
         MinecraftForge.EVENT_BUS.register(new SharedRegistry());
     }
@@ -81,6 +92,7 @@ public class SharedRuntime {
         mediaResolver = new MediaResolver();
         queueSupervisor = new SimpleQueueSupervisor(mediaResolver);
         NetworkRegistry.INSTANCE.registerGuiHandler(PlayBlock.instance, new GuiHandler());
+
         networkWrapper = NetworkRegistry.INSTANCE.newEventDrivenChannel(PlayBlock.CHANNEL_ID);
         networkWrapper.register(new PacketHandler());
 

@@ -1,6 +1,6 @@
 {
-   "pack":{
-      "pack_format":1,
-      "description":"PlayBlock Assets"
-   }
+    "pack": {
+        "pack_format": 4,
+        "description": "PlayBlock resources"
+    }
 }

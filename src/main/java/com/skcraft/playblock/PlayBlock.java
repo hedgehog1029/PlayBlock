@@ -1,10 +1,6 @@
 package com.skcraft.playblock;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-
 import com.skcraft.playblock.client.ClientRuntime;
-
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -15,13 +11,15 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = PlayBlock.MOD_ID, name = PlayBlock.MOD_NAME, dependencies = PlayBlock.DEPENDENCIES)
 public class PlayBlock {
 
     public static final String MOD_ID = "playblock";
     public static final String MOD_NAME = "PlayBlock";
-    public static final String DEPENDENCIES = "after:OpenComputers@[1.5.0,)";
+    public static final String DEPENDENCIES = "after:opencomputers@[1.7.0,)";
     public static final String CHANNEL_ID = "PlayBlock";
 
     public static Logger log;

@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "normal": {"model": "playblock:projector" },
+    "inventory": {"model": "playblock:projector" },
+    "facing=north": {
+      "model": "playblock:projector",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "playblock:projector",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "playblock:projector",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "playblock:projector",
+      "y": 270
+    }
+  }
+}

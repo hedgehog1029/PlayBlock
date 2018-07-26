@@ -1,7 +1,5 @@
 package com.skcraft.playblock.client;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.skcraft.playblock.SharedConfiguration;
 import com.skcraft.playblock.SharedRuntime;
 import com.skcraft.playblock.player.MediaManager;
@@ -10,11 +8,13 @@ import com.skcraft.playblock.projector.RenderProjector;
 import com.skcraft.playblock.projector.TileEntityProjector;
 import com.skcraft.playblock.queue.ExposedQueue;
 import com.skcraft.playblock.queue.GuiQueue;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
 /**
@@ -41,6 +41,13 @@ public class ClientRuntime extends SharedRuntime {
      */
     public SharedConfiguration getClientOptions() {
         return options;
+    }
+
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
+
+        MinecraftForge.EVENT_BUS.register(new ClientModelRegistry());
     }
 
     @Override

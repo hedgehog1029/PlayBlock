@@ -154,7 +154,7 @@ public class PacketHandler {
 
         PacketBuffer packetBuf = new PacketBuffer(out.buffer());
         FMLProxyPacket packet = new FMLProxyPacket(packetBuf, PlayBlock.CHANNEL_ID);
-        SharedRuntime.networkWrapper.sendToServer(packet);
+        SharedRuntime.getNetworkWrapper().sendToServer(packet);
     }
 
     public static void sendToClient(PlayBlockPayload payload, List<EntityPlayer> players) {
@@ -172,11 +172,11 @@ public class PacketHandler {
         FMLProxyPacket packet = new FMLProxyPacket(packetBuf, PlayBlock.CHANNEL_ID);
 
         if (players == null) {
-            SharedRuntime.networkWrapper.sendToAll(packet);
+            SharedRuntime.getNetworkWrapper().sendToAll(packet);
         } else {
             for (EntityPlayer player : players) {
                 if (player instanceof EntityPlayerMP) {
-                    SharedRuntime.networkWrapper.sendTo(packet, (EntityPlayerMP) player);
+                    SharedRuntime.getNetworkWrapper().sendTo(packet, (EntityPlayerMP) player);
                 }
             }
         }

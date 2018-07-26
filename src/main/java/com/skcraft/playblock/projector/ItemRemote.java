@@ -29,7 +29,7 @@ public class ItemRemote extends Item {
 
     public ItemRemote() {
         setTranslationKey(ItemRemote.INTERNAL_NAME);
-        setRegistryName("playblock:remote");
+        setRegistryName(PlayBlock.MOD_ID, "remote");
         setCreativeTab(PlayBlockCreativeTab.tab);
     }
 

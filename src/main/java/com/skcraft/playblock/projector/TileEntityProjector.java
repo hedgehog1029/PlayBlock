@@ -186,7 +186,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
                 out.writeByte(PlayBlockPayload.Type.TILE_ENTITY_NBT.ordinal());
                 ByteBufUtils.writeTag(out.buffer(), tag);
                 FMLProxyPacket packet = new FMLProxyPacket(new PacketBuffer(out.buffer()), PlayBlock.CHANNEL_ID);
-                SharedRuntime.networkWrapper.sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
+                SharedRuntime.getNetworkWrapper().sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
                 out.close();
             } catch (IOException e) {
                 PlayBlock.log(Level.WARN, "Failed to send tile info to players!");
