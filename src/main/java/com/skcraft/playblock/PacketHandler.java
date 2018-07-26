@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -49,15 +50,20 @@ public class PacketHandler {
 
             // Figure out what we are containing
             switch (container.getType()) {
-            case TILE_ENTITY:
-                handleTilePayload(world, entityPlayer, in);
+                case TILE_ENTITY:
+                    handleTilePayload(world, entityPlayer, in);
                 break;
             case TILE_ENTITY_NBT:
-                handleNetworkedNBT(world, evt.getPacket().payload());
+                scheduleRenderThread(() -> handleNetworkedNBT(world, evt.getPacket().payload()));
             }
         } catch (IOException e) {
             PlayBlock.log(Level.WARN, "Failed to read packet data from " + entityPlayer.getDisplayName(), e);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void scheduleRenderThread(Runnable runnable) {
+        Minecraft.getMinecraft().addScheduledTask(runnable);
     }
 
     @SubscribeEvent
@@ -73,24 +79,28 @@ public class PacketHandler {
             return;
         }
 
-        try {
-            ByteBufInputStream in = new ByteBufInputStream(evt.getPacket().payload());
+        MinecraftServer server = ((EntityPlayerMP) entityPlayer).server;
 
-            // Read the container
-            PlayBlockPayload container = new PlayBlockPayload();
-            container.read(in);
+        server.addScheduledTask(() -> {
+            try {
+                ByteBufInputStream in = new ByteBufInputStream(evt.getPacket().payload());
 
-            // Figure out what we are containing
-            switch (container.getType()) {
-            case TILE_ENTITY:
-                handleTilePayload(world, entityPlayer, in);
-                break;
-            case TILE_ENTITY_NBT:
-                handleNetworkedNBT(world, evt.getPacket().payload());
+                // Read the container
+                PlayBlockPayload container = new PlayBlockPayload();
+                container.read(in);
+
+                // Figure out what we are containing
+                switch (container.getType()) {
+                    case TILE_ENTITY:
+                        handleTilePayload(world, entityPlayer, in);
+                        break;
+                    case TILE_ENTITY_NBT:
+                        handleNetworkedNBT(world, evt.getPacket().payload());
+                }
+            } catch (IOException e) {
+                PlayBlock.log(Level.WARN, "Failed to read packet data from " + entityPlayer.getDisplayName(), e);
             }
-        } catch (IOException e) {
-            PlayBlock.log(Level.WARN, "Failed to read packet data from " + entityPlayer.getDisplayName(), e);
-        }
+        });
     }
 
     public void handleTilePayload(World world, EntityPlayer player, ByteBufInputStream in) throws IOException {

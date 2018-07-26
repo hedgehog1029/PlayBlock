@@ -3,7 +3,7 @@ package com.skcraft.playblock.media;
 import com.skcraft.playblock.queue.QueueException;
 import com.skcraft.playblock.util.Validate;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.server.FMLServerHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class MediaResolver {
         }
 
         // Override with -DplayBlock.allowAnyUri=true or Singleplayer
-        MinecraftServer server = FMLServerHandler.instance().getServer();
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (ALLOW_ANY_URI || (server != null && server.isSinglePlayer())) {
             return true;
         }
