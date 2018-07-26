@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * The tile entity for the projector block.
  */
-@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
+@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")
 public class TileEntityProjector extends TileEntity implements BehaviorListener, PayloadReceiver, ExposedQueue, SimpleComponent, ITickable {
 
     public static final String INTERNAL_NAME = "PlayBlockProjector";
@@ -264,14 +264,14 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getURL(Context context, Arguments args) {
         String uri = this.mediaPlayer.getUri();
         return new Object[] { uri };
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setURL(Context context, Arguments args) {
         String uri = args.checkString(0);
         if (uri != null) {
@@ -285,7 +285,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setResolution(Context context, Arguments args) {
         float width = (float) args.checkDouble(0);
         float height = (float) args.checkDouble(1);
@@ -301,7 +301,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setRanges(Context context, Arguments args) {
         float triggerRange = (float) args.checkDouble(0);
         float fadeRange = (float) args.checkDouble(1);

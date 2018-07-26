@@ -1,19 +1,11 @@
 package com.skcraft.playblock.installer;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 public final class SetupUtils {
 
@@ -69,10 +61,14 @@ public final class SetupUtils {
     }
 
     public static void showMessageDialog(Component parentComponent, String message, Throwable t, String title, int messageType) {
+        System.out.println(message);
 
         StringWriter writer = new StringWriter();
         writer.write("To report this error, please provide:\n\n");
-        t.printStackTrace(new PrintWriter(writer));
+        if (t != null)
+            t.printStackTrace(new PrintWriter(writer));
+        else
+            writer.write(message);
 
         showMessageDialog(parentComponent, message, writer.toString(), title, messageType);
     }
