@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IgI",
+    "rer",
+    "IdI"
+  ],
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "blockIron"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustPrismarine"
+    },
+    "e": {
+      "type": "forge:ore_dict",
+      "ore": "glowstone"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    }
+  },
+  "result": {
+    "item": "playblock:projector",
+    "count": 1
+  }
+}
