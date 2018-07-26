@@ -3,6 +3,9 @@ package com.skcraft.playblock.player;
 import com.sk89q.task.ProgressListener;
 import com.skcraft.playblock.installer.PlayBlockSetup;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 
@@ -29,18 +32,18 @@ public class EmbeddedInstaller implements ProgressListener {
      */
     public void start() {
         if (state == State.RESTART_NEEDED) {
-            Minecraft.getMinecraft().player.sendChatMessage("PlayBlock: Please restart your game.");
+            this.sendMessage("PlayBlock: Please restart your game.");
         } else if (state == State.NOT_INSTALLING || state == State.ERROR) {
             installer = PlayBlockSetup.startEmbedded(this);
             state = State.INSTALLING;
 
-            Minecraft.getMinecraft().player.sendChatMessage("PlayBlock: Now installing the necessary files! Please switch to the installer window outside the game for more information.");
+            this.sendMessage("PlayBlock: Now installing the necessary files! Please switch to the installer window outside the game for more information.");
         } else if (installer != null) {
             installer.setState(Frame.NORMAL);
             installer.setVisible(true);
             installer.setLocationRelativeTo(null);
 
-            Minecraft.getMinecraft().player.sendChatMessage("PlayBlock: Please switch to the installer window outside the game for more information.");
+            this.sendMessage("PlayBlock: Please switch to the installer window outside the game for more information.");
         }
     }
 
@@ -88,7 +91,7 @@ public class EmbeddedInstaller implements ProgressListener {
         state = State.RESTART_NEEDED;
         installer = null;
 
-        Minecraft.getMinecraft().player.sendChatMessage("PlayBlock: Please now restart your game so that the installed files can be loaded.");
+        this.sendMessage("PlayBlock: Please now restart your game so that the installed files can be loaded.");
     }
 
     @Override
@@ -96,7 +99,7 @@ public class EmbeddedInstaller implements ProgressListener {
         state = State.NOT_INSTALLING;
         installer = null;
 
-        Minecraft.getMinecraft().player.sendChatMessage("PlayBlock: Installation aborted.");
+        this.sendMessage("PlayBlock: Installation aborted.");
     }
 
     @Override
@@ -104,7 +107,11 @@ public class EmbeddedInstaller implements ProgressListener {
         state = State.ERROR;
         installer = null;
 
-        Minecraft.getMinecraft().player.sendChatMessage("PlayBlock: An error occurred during installation. " + "Please switch to the installer window outside the game for more information.");
+        this.sendMessage("PlayBlock: An error occurred during installation. " + "Please switch to the installer window outside the game for more information.");
     }
 
+    public void sendMessage(String text) {
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(text)
+                .setStyle(new Style().setColor(TextFormatting.GOLD)));
+    }
 }

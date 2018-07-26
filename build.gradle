@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC1.12.2-1.7.2.71:api"
+    compileOnly "li.cil.oc:OpenComputers:MC1.12.2-1.7.2.71:api"
 }
 
 jar {
