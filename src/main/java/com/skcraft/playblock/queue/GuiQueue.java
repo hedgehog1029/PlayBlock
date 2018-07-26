@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -247,11 +248,22 @@ public class GuiQueue extends GuiScreen {
         Futures.addCallback(future, new FutureCallback<EnqueueResponse>() {
             @Override
             public void onSuccess(EnqueueResponse result) {
+                if (result.getResponse() == EnqueueResponse.Response.OK)
+                    sendStatus("\u00A76Queued item successfully.");
+                else {
+                    sendStatus("\u00A7cFailed to queue item: " + result.getResponse().toString());
+                }
             }
 
             @Override
             public void onFailure(Throwable t) {
+                mc.player.sendStatusMessage(new TextComponentString("\u00A7cFailed to queue item."), true);
+                mc.player.sendStatusMessage(new TextComponentString(t.getMessage()), false);
             }
         });
+    }
+
+    void sendStatus(String text) {
+        mc.player.sendStatusMessage(new TextComponentString(text), true);
     }
 }

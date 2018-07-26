@@ -23,9 +23,7 @@ import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -163,7 +161,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
 
     @Override
     public NBTTagCompound getUpdateTag() {
-        NBTTagCompound tag = new NBTTagCompound();
+        NBTTagCompound tag = super.getUpdateTag();
         
         behaviors.writeNetworkedNBT(tag);
         
@@ -171,9 +169,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        NBTTagCompound tag = pkt.getNbtCompound();
-        
+    public void handleUpdateTag(NBTTagCompound tag) {
         behaviors.readNetworkedNBT(tag);
     }
 
@@ -216,7 +212,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
-        // Saving to disk
+        // Reading from disk
         super.readFromNBT(tag);
         behaviors.readSaveNBT(tag);
     }

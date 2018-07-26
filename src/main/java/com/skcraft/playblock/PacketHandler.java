@@ -120,6 +120,8 @@ public class PacketHandler {
 
             if (tile instanceof PayloadReceiver) {
                 ((PayloadReceiver) tile).readPayload(player, in);
+
+                tile.markDirty();
             }
         } else {
             PlayBlock.log(Level.WARN, "Got update packet for non-existent chunk/block from " + player.getDisplayName());
@@ -139,6 +141,7 @@ public class PacketHandler {
             if (tile instanceof TileEntityProjector) {
                 TileEntityProjector projector = (TileEntityProjector) tile;
                 projector.getBehaviors().readNetworkedNBT(tag);
+                projector.markDirty();
             }
         } else {
             PlayBlock.log(Level.WARN, "Got update packet for non-existent chunk/block!");
