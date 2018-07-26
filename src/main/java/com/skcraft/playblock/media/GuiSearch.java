@@ -1,19 +1,17 @@
 package com.skcraft.playblock.media;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.skcraft.playblock.util.GuiScrollbar;
+import com.skcraft.playblock.util.StringUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.skcraft.playblock.util.GuiScrollbar;
-import com.skcraft.playblock.util.StringUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiSearch extends GuiScreen {
 
@@ -43,7 +41,7 @@ public class GuiSearch extends GuiScreen {
 
         buttonList.add(searchButton = new GuiButton(0, left + 179, top + 14, 43, 20, StringUtils.translate("gui.search")));
 
-        queryField = new GuiTextField(1, fontRendererObj, left + 38, top + 19, 150, fontRendererObj.FONT_HEIGHT + 5);
+        queryField = new GuiTextField(1, fontRenderer, left + 38, top + 19, 150, fontRenderer.FONT_HEIGHT + 5);
         queryField.setVisible(true);
         queryField.setMaxStringLength(100);
         queryField.setEnableBackgroundDrawing(true);
@@ -74,7 +72,7 @@ public class GuiSearch extends GuiScreen {
         }
 
         if (errorOccured) {
-            fontRendererObj.drawString("An error has occured!", left + 70, top + 50, 14737632);
+            fontRenderer.drawString("An error has occured!", left + 70, top + 50, 14737632);
         }
 
         scrollbar.drawScrollbar(mouseX, mouseY);

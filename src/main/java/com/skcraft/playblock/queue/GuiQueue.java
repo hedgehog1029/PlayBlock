@@ -1,17 +1,5 @@
 package com.skcraft.playblock.queue;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -20,9 +8,18 @@ import com.skcraft.playblock.network.EnqueueResponse;
 import com.skcraft.playblock.projector.GuiProjectorQueueSlot;
 import com.skcraft.playblock.util.GuiScrollbar;
 import com.skcraft.playblock.util.StringUtils;
-
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The GUI for the media queue.
@@ -65,7 +62,7 @@ public class GuiQueue extends GuiScreen {
         buttonList.add(clearButton = new GuiButton(3, left + 4, top + 100, 42, 20, StringUtils.translate("gui.clear")));
         removeButton.enabled = false;
 
-        uriField = new GuiTextField(1, fontRendererObj, left + 35, top + 17, 157, fontRendererObj.FONT_HEIGHT + 5);
+        uriField = new GuiTextField(1, fontRenderer, left + 35, top + 17, 157, fontRenderer.FONT_HEIGHT + 5);
         uriField.setVisible(true);
         uriField.setMaxStringLength(100);
         uriField.setEnableBackgroundDrawing(true);
@@ -87,7 +84,7 @@ public class GuiQueue extends GuiScreen {
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 
         uriField.drawTextBox();
-        fontRendererObj.drawString(StringUtils.translate("options.url"), left + 10, top + 20, 0xff999999);
+        fontRenderer.drawString(StringUtils.translate("options.url"), left + 10, top + 20, 0xff999999);
 
         if (!scrollbar.isEnabled() && slots.size() / 7.0 > 1) {
             scrollbar.setEnabled(true);
@@ -104,8 +101,8 @@ public class GuiQueue extends GuiScreen {
     public void actionPerformed(GuiButton button) {
         if (button.id == addButton.id) {
             String name = uriField.getText(); // Should be media.getTitle()
-            if (fontRendererObj.getStringWidth(name) > 134) {
-                name = fontRendererObj.trimStringToWidth(name, 128).concat("...");
+            if (fontRenderer.getStringWidth(name) > 134) {
+                name = fontRenderer.trimStringToWidth(name, 128).concat("...");
             }
 
             createSlot(name);

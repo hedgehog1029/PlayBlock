@@ -1,9 +1,5 @@
 package com.skcraft.playblock;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-
 import com.sk89q.forge.ResponseTracker;
 import com.skcraft.playblock.media.MediaResolver;
 import com.skcraft.playblock.projector.BlockProjector;
@@ -13,7 +9,11 @@ import com.skcraft.playblock.queue.ExposedQueue;
 import com.skcraft.playblock.queue.QueueManager;
 import com.skcraft.playblock.queue.QueueSupervisor;
 import com.skcraft.playblock.queue.SimpleQueueSupervisor;
-
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
@@ -63,6 +63,11 @@ public class SharedRuntime {
      */
     public void preInit(FMLPreInitializationEvent event) {
         config = new SharedConfiguration("PlayBlock.cfg");
+
+        blockProjector = new BlockProjector();
+        itemRemote = new ItemRemote();
+
+        MinecraftForge.EVENT_BUS.register(new SharedRegistry());
     }
 
     /**
@@ -78,14 +83,8 @@ public class SharedRuntime {
         NetworkRegistry.INSTANCE.registerGuiHandler(PlayBlock.instance, new GuiHandler());
         networkWrapper = NetworkRegistry.INSTANCE.newEventDrivenChannel(PlayBlock.CHANNEL_ID);
         networkWrapper.register(new PacketHandler());
-        blockProjector = new BlockProjector();
 
-        GameRegistry.registerBlock(blockProjector, BlockProjector.INTERNAL_NAME);
-        GameRegistry.registerTileEntity(TileEntityProjector.class, TileEntityProjector.INTERNAL_NAME);
-
-        itemRemote = new ItemRemote();
-
-        GameRegistry.registerItem(itemRemote, ItemRemote.INTERNAL_NAME);
+        GameRegistry.registerTileEntity(TileEntityProjector.class, new ResourceLocation(PlayBlock.MOD_ID, "projector"));
 
         getConfig().save();
     }

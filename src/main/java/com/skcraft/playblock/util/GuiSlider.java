@@ -2,11 +2,9 @@ package com.skcraft.playblock.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiSlider extends GuiButton {
@@ -65,7 +63,7 @@ public abstract class GuiSlider extends GuiButton {
     protected void mouseDragged(Minecraft minecraft, int x, int y) {
         if (this.visible) {
             if (this.dragging) {
-                this.value = (float) (x - (this.xPosition + 4)) / (float) (this.width - 8);
+                this.value = (float) (x - (this.x + 4)) / (float) (this.width - 8);
 
                 if (this.value < 0) {
                     this.value = 0;
@@ -81,15 +79,15 @@ public abstract class GuiSlider extends GuiButton {
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            this.drawTexturedModalRect(this.xPosition + (int) (this.value * (this.width - 8)), this.yPosition, 0, 66, 4, 20);
-            this.drawTexturedModalRect(this.xPosition + (int) (this.value * (this.width - 8)) + 4, this.yPosition, 196, 66, 4, 20);
+            this.drawTexturedModalRect(this.x + (int) (this.value * (this.width - 8)), this.y, 0, 66, 4, 20);
+            this.drawTexturedModalRect(this.x + (int) (this.value * (this.width - 8)) + 4, this.y, 196, 66, 4, 20);
         }
     }
 
     @Override
     public boolean mousePressed(Minecraft minecraft, int x, int y) {
         if (super.mousePressed(minecraft, x, y)) {
-            this.value = (float) (x - (this.xPosition + 4)) / (float) (this.width - 8);
+            this.value = (float) (x - (this.x + 4)) / (float) (this.width - 8);
 
             if (this.value < 0) {
                 this.value = 0;

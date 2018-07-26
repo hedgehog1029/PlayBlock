@@ -1,9 +1,7 @@
 package com.skcraft.playblock;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemStack;
 
 public class PlayBlockCreativeTab extends CreativeTabs {
 
@@ -14,9 +12,7 @@ public class PlayBlockCreativeTab extends CreativeTabs {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public Item getTabIconItem() {
-        return SharedRuntime.itemRemote;
+    public ItemStack createIcon() {
+        return new ItemStack(SharedRuntime.itemRemote);
     }
-
 }

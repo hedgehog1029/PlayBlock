@@ -1,22 +1,19 @@
 package com.skcraft.playblock.client;
 
-import java.awt.Desktop;
-import java.net.URI;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.skcraft.playblock.PlayBlock;
 import com.skcraft.playblock.player.MediaManager;
 import com.skcraft.playblock.util.GuiSlider;
 import com.skcraft.playblock.util.StringUtils;
-
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.net.URI;
 
 /**
  * The options GUI.
@@ -86,7 +83,7 @@ public class GuiOptions extends GuiScreen {
             try {
                 Desktop.getDesktop().browse(new URI("http://skcraft.com"));
             } catch (Throwable e) {
-                this.mc.thePlayer.sendChatMessage("For more information about PlayBlock, see http://skcraft.com");
+                this.mc.player.sendChatMessage("For more information about PlayBlock, see http://skcraft.com");
             }
             PlayBlock.getClientRuntime().getClientOptions().setFloat("volume", volumeSlider.getValue() * 2);
             this.mc.displayGuiScreen((GuiScreen) null);
@@ -106,8 +103,8 @@ public class GuiOptions extends GuiScreen {
         drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 
         String options = StringUtils.translate("options");
-        int textWidth = fontRendererObj.getStringWidth(options);
-        fontRendererObj.drawString(options, left + (xSize - textWidth) / 2, top + 20, 0xffffffff);
+        int textWidth = fontRenderer.getStringWidth(options);
+        fontRenderer.drawString(options, left + (xSize - textWidth) / 2, top + 20, 0xffffffff);
 
         super.drawScreen(mouseX, mouseY, par3);
     }

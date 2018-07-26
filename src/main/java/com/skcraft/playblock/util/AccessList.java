@@ -1,12 +1,16 @@
 package com.skcraft.playblock.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
+ * Provides a very simple way to check who may have access to a block,
+ * depending on right-click mechanics of the block being clicked.
+ *
+ * I'm leaving the original text here for posterity because it's too funny
+ *
  * Privates a very simple way to see who may have access to a block, depending
  * on the right click mechanic on blocks being blocked.
  */
@@ -20,20 +24,13 @@ public class AccessList {
         long now = System.currentTimeMillis();
 
         // Removed old entries
-        Iterator<Map.Entry<String, Long>> it = allowed.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Long> entry = it.next();
-
-            if (now - entry.getValue() > MAX_ACCESS_TIME) {
-                it.remove();
-            }
-        }
+        allowed.entrySet().removeIf(entry -> now - entry.getValue() > MAX_ACCESS_TIME);
 
         allowed.put(name, now);
     }
 
     public void allow(EntityPlayer player) {
-        allow(player.getCommandSenderName());
+        allow(player.getName());
     }
 
     public boolean checkAndForget(String name) {
@@ -52,7 +49,7 @@ public class AccessList {
     }
 
     public boolean checkAndForget(EntityPlayer player) {
-        return checkAndForget(player.getCommandSenderName());
+        return checkAndForget(player.getName());
     }
 
 }

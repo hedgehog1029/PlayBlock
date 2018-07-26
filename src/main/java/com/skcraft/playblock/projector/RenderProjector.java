@@ -1,24 +1,21 @@
 package com.skcraft.playblock.projector;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.skcraft.playblock.player.MediaManager;
 import com.skcraft.playblock.player.MediaPlayerClient;
 import com.skcraft.playblock.player.MediaRenderer;
 import com.skcraft.playblock.player.RendererState;
 import com.skcraft.playblock.util.DrawUtils;
 import com.skcraft.playblock.util.MathUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Renders the screen for the projector blocks.
  */
-public class RenderProjector extends TileEntitySpecialRenderer {
+public class RenderProjector extends TileEntitySpecialRenderer<TileEntityProjector> {
 
     private static final float TEXT_SCALE = 0.045f;
     private static final int LINE_SPACING = 2;
@@ -43,26 +40,24 @@ public class RenderProjector extends TileEntitySpecialRenderer {
     }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float direction) {
-
-        TileEntityProjector projector = ((TileEntityProjector) tileEntity);
+    public void render(TileEntityProjector projector, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         MediaPlayerClient mediaPlayer = (MediaPlayerClient) projector.getMediaPlayer();
 
         float width = mediaPlayer.getWidth();
         float height = mediaPlayer.getHeight();
-        int metadata = tileEntity.getBlockMetadata();
+        int metadata = projector.getBlockMetadata();
         float rot;
 
         // Calculate the rotation
         switch (metadata) {
-        case 0:
-            rot = 180;
-            break;
-        case 2:
-            rot = 0;
-            break;
-        default:
-            rot = metadata * 90;
+            case 0:
+                rot = 180;
+                break;
+            case 2:
+                rot = 0;
+                break;
+            default:
+                rot = metadata * 90;
         }
 
         GL11.glPushMatrix();
@@ -321,7 +316,7 @@ public class RenderProjector extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    private FontRenderer getFontRenderer() {
+    public FontRenderer getFontRenderer() {
         return Minecraft.getMinecraft().fontRenderer;
     }
 

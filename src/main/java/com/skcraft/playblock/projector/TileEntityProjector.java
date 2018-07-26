@@ -1,31 +1,6 @@
 package com.skcraft.playblock.projector;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.Unpooled;
-
-import java.io.IOException;
-import java.util.List;
-
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-
-import org.apache.logging.log4j.Level;
-
-import com.sk89q.forge.BehaviorList;
-import com.sk89q.forge.BehaviorListener;
-import com.sk89q.forge.BehaviorPayload;
-import com.sk89q.forge.PayloadReceiver;
-import com.sk89q.forge.TileEntityPayload;
+import com.sk89q.forge.*;
 import com.skcraft.playblock.PacketHandler;
 import com.skcraft.playblock.PlayBlock;
 import com.skcraft.playblock.SharedRuntime;
@@ -38,7 +13,24 @@ import com.skcraft.playblock.queue.QueueBehavior;
 import com.skcraft.playblock.util.AccessList;
 import com.skcraft.playblock.util.DoubleThresholdRange;
 import com.skcraft.playblock.util.DoubleThresholdRange.RangeTest;
-
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.Unpooled;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -46,12 +38,16 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The tile entity for the projector block.
  */
 @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityProjector extends TileEntity implements BehaviorListener, PayloadReceiver, ExposedQueue, SimpleComponent {
+public class TileEntityProjector extends TileEntity implements BehaviorListener, PayloadReceiver, ExposedQueue, SimpleComponent, ITickable {
 
     public static final String INTERNAL_NAME = "PlayBlockProjector";
 
@@ -166,30 +162,31 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     }
 
     @Override
-    public Packet getDescriptionPacket() {
-        // Client -> Server
+    public NBTTagCompound getUpdateTag() {
         NBTTagCompound tag = new NBTTagCompound();
+        
         behaviors.writeNetworkedNBT(tag);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+        
+        return tag;
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        // Only called on the client
-        NBTTagCompound tag = packet.func_148857_g();
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        NBTTagCompound tag = pkt.getNbtCompound();
+        
         behaviors.readNetworkedNBT(tag);
     }
 
     @Override
     public void networkedNbt(NBTTagCompound tag) {
-        if (!this.worldObj.isRemote) {
+        if (!this.world.isRemote) {
             try {
                 super.writeToNBT(tag); // Coordinates
                 ByteBufOutputStream out = new ByteBufOutputStream(Unpooled.buffer());
                 out.writeByte(PlayBlockPayload.Type.TILE_ENTITY_NBT.ordinal());
                 ByteBufUtils.writeTag(out.buffer(), tag);
-                FMLProxyPacket packet = new FMLProxyPacket(out.buffer(), PlayBlock.CHANNEL_ID);
-                SharedRuntime.networkWrapper.sendToAllAround(packet, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 250));
+                FMLProxyPacket packet = new FMLProxyPacket(new PacketBuffer(out.buffer()), PlayBlock.CHANNEL_ID);
+                SharedRuntime.networkWrapper.sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
                 out.close();
             } catch (IOException e) {
                 PlayBlock.log(Level.WARN, "Failed to send tile info to players!");
@@ -201,7 +198,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     public void payloadSend(BehaviorPayload behaviorPayload, List<EntityPlayer> players) {
         PlayBlockPayload payload = new PlayBlockPayload(new TileEntityPayload(this, behaviorPayload));
 
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             PacketHandler.sendToServer(payload);
         } else {
             PacketHandler.sendToClient(payload, players);
@@ -209,10 +206,12 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         // Saving to disk
         super.writeToNBT(tag);
         behaviors.writeSaveNBT(tag);
+        
+        return tag;
     }
 
     @Override
@@ -225,7 +224,7 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-        if (this.worldObj.isRemote) {
+        if (this.world.isRemote) {
             ((MediaPlayerClient) mediaPlayer).release();
         }
     }
@@ -233,20 +232,20 @@ public class TileEntityProjector extends TileEntity implements BehaviorListener,
     @Override
     public void invalidate() {
         super.invalidate();
-        if (this.worldObj.isRemote) {
+        if (this.world.isRemote) {
             ((MediaPlayerClient) mediaPlayer).release();
         }
     }
 
     @Override
-    public boolean canUpdate() {
-        return true;
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+        return !(newState.getBlock() instanceof BlockProjector);
     }
 
     @Override
-    public void updateEntity() {
-        if (this.worldObj.isRemote) {
-            if (rangeTest.inRange(xCoord, yCoord, zCoord)) {
+    public void update() {
+        if (this.world.isRemote) {
+            if (rangeTest.inRange(pos.getX(), pos.getY(), pos.getZ())) {
                 ((MediaPlayerClient) mediaPlayer).enable();
             } else {
                 ((MediaPlayerClient) mediaPlayer).disable();

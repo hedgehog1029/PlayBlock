@@ -1,20 +1,19 @@
 package com.skcraft.playblock.projector;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.skcraft.playblock.media.MediaResolver;
 import com.skcraft.playblock.player.MediaPlayer;
 import com.skcraft.playblock.util.DoubleThresholdRange;
 import com.skcraft.playblock.util.StringUtils;
-
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 /**
  * The GUI for the projector.
@@ -60,20 +59,20 @@ public class GuiProjector extends GuiScreen {
         this.buttonList.add(applyButton = new GuiButton(0, left + 160, top + 125, 80, 20, StringUtils.translate("gui.done")));
 
         this.buttonList.add(clearUriButton = new GuiButton(1, left + 220, top + 14, 17, 20, "X"));
-
-        uriField = new GuiTextField(this.fontRendererObj, left + 60, top + 17, 157, this.fontRendererObj.FONT_HEIGHT + 5);
+        
+        uriField = new GuiTextField(2, this.fontRenderer, left + 60, top + 17, 157, this.fontRenderer.FONT_HEIGHT + 5);
         initTextField(uriField, 100, uri);
 
-        heightField = new GuiTextField(this.fontRendererObj, left + 130, top + 37, 50, this.fontRendererObj.FONT_HEIGHT + 5);
+        heightField = new GuiTextField(3, this.fontRenderer, left + 130, top + 37, 50, this.fontRenderer.FONT_HEIGHT + 5);
         initTextField(heightField, 10, Float.toString(projectorHeight));
 
-        widthField = new GuiTextField(this.fontRendererObj, left + 60, top + 37, 50, this.fontRendererObj.FONT_HEIGHT + 5);
+        widthField = new GuiTextField(4, this.fontRenderer, left + 60, top + 37, 50, this.fontRenderer.FONT_HEIGHT + 5);
         initTextField(widthField, 10, Float.toString(projectorWidth));
 
-        triggerRangeField = new GuiTextField(this.fontRendererObj, left + 60, top + 57, 50, this.fontRendererObj.FONT_HEIGHT + 5);
+        triggerRangeField = new GuiTextField(5, this.fontRenderer, left + 60, top + 57, 50, this.fontRenderer.FONT_HEIGHT + 5);
         initTextField(triggerRangeField, 10, Float.toString(triggerRange));
 
-        fadeRangeField = new GuiTextField(this.fontRendererObj, left + 60, top + 77, 50, this.fontRendererObj.FONT_HEIGHT + 5);
+        fadeRangeField = new GuiTextField(6, this.fontRenderer, left + 60, top + 77, 50, this.fontRenderer.FONT_HEIGHT + 5);
         initTextField(fadeRangeField, 10, Float.toString(fadeRange));
     }
 
@@ -131,20 +130,20 @@ public class GuiProjector extends GuiScreen {
         triggerRangeField.drawTextBox();
         fadeRangeField.drawTextBox();
 
-        fontRendererObj.drawString(StringUtils.translate("options.url"), left + 10, top + 20, 0xff999999);
-        fontRendererObj.drawString(StringUtils.translate("options.screenSize"), left + 10, top + 40, 0xff999999);
-        fontRendererObj.drawString("x", left + 117, top + 40, 0xff999999);
-        fontRendererObj.drawString(StringUtils.translate("options.turnOn"), left + 10, top + 60, 0xff999999);
-        fontRendererObj.drawString(StringUtils.translate("options.blocksAway"), left + 117, top + 60, 0xff999999);
-        fontRendererObj.drawString(StringUtils.translate("options.turnOff"), left + 10, top + 80, 0xff999999);
-        fontRendererObj.drawString(StringUtils.translate("options.blocksAway"), left + 117, top + 80, 0xff999999);
-        fontRendererObj.drawString("TEST VERSION - skcraft.com", left + 10, top + 132, 0xffffffff);
+        fontRenderer.drawString(StringUtils.translate("options.url"), left + 10, top + 20, 0xff999999);
+        fontRenderer.drawString(StringUtils.translate("options.screenSize"), left + 10, top + 40, 0xff999999);
+        fontRenderer.drawString("x", left + 117, top + 40, 0xff999999);
+        fontRenderer.drawString(StringUtils.translate("options.turnOn"), left + 10, top + 60, 0xff999999);
+        fontRenderer.drawString(StringUtils.translate("options.blocksAway"), left + 117, top + 60, 0xff999999);
+        fontRenderer.drawString(StringUtils.translate("options.turnOff"), left + 10, top + 80, 0xff999999);
+        fontRenderer.drawString(StringUtils.translate("options.blocksAway"), left + 117, top + 80, 0xff999999);
+        fontRenderer.drawString("TEST VERSION - skcraft.com", left + 10, top + 132, 0xffffffff);
 
         super.drawScreen(mouseX, mouseY, par3);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int buttonClicked) {
+    protected void mouseClicked(int x, int y, int buttonClicked) throws IOException {
         super.mouseClicked(x, y, buttonClicked);
         uriField.mouseClicked(x, y, buttonClicked);
         heightField.mouseClicked(x, y, buttonClicked);
@@ -154,7 +153,7 @@ public class GuiProjector extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char key, int par2) {
+    protected void keyTyped(char key, int par2) throws IOException {
         super.keyTyped(key, par2);
 
         if (uriField.isFocused()) {
