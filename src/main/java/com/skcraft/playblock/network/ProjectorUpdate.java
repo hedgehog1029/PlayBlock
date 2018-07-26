@@ -1,11 +1,10 @@
 package com.skcraft.playblock.network;
 
+import com.sk89q.forge.Payload;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
-
-import com.sk89q.forge.Payload;
 
 public class ProjectorUpdate implements Payload {
 
@@ -14,6 +13,7 @@ public class ProjectorUpdate implements Payload {
     private float width;
     private float triggerRange;
     private float fadeRange;
+    private boolean queueMode;
 
     public ProjectorUpdate() {
     }
@@ -58,6 +58,14 @@ public class ProjectorUpdate implements Payload {
         this.fadeRange = fadeRange;
     }
 
+    public boolean isQueueMode() {
+        return queueMode;
+    }
+
+    public void setQueueMode(boolean queueMode) {
+        this.queueMode = queueMode;
+    }
+
     @Override
     public void read(ByteBufInputStream in) throws IOException {
         setUri(in.readUTF());
@@ -65,6 +73,7 @@ public class ProjectorUpdate implements Payload {
         setHeight(in.readFloat());
         setTriggerRange(in.readFloat());
         setFadeRange(in.readFloat());
+        setQueueMode(in.readBoolean());
     }
 
     @Override
@@ -74,6 +83,7 @@ public class ProjectorUpdate implements Payload {
         out.writeFloat(getHeight());
         out.writeFloat(getTriggerRange());
         out.writeFloat(getFadeRange());
+        out.writeBoolean(isQueueMode());
     }
 
 }

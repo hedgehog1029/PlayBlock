@@ -116,7 +116,7 @@ public class PacketHandler {
         // We need to check if the chunk exists, otherwise an update packet
         // could be used to overload the server by loading/generating chunks
         if (world.isBlockLoaded(pos)) {
-            TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+            TileEntity tile = world.getTileEntity(pos);
 
             if (tile instanceof PayloadReceiver) {
                 ((PayloadReceiver) tile).readPayload(player, in);
@@ -136,7 +136,7 @@ public class PacketHandler {
         BlockPos pos = new BlockPos(x, y, z);
 
         if (world.isBlockLoaded(pos)) {
-            TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+            TileEntity tile = world.getTileEntity(pos);
 
             if (tile instanceof TileEntityProjector) {
                 TileEntityProjector projector = (TileEntityProjector) tile;

@@ -31,6 +31,7 @@ public class GuiProjector extends GuiScreen {
     private GuiTextField uriField, heightField, widthField, triggerRangeField, fadeRangeField;
     private GuiButton applyButton;
     private GuiButton clearUriButton;
+    private GuiButton toggleQueueButton;
 
     private float projectorWidth, projectorHeight, triggerRange, fadeRange;
     private String uri;
@@ -57,8 +58,8 @@ public class GuiProjector extends GuiScreen {
         int top = (height - ySize) / 2;
 
         this.buttonList.add(applyButton = new GuiButton(0, left + 160, top + 125, 80, 20, StringUtils.translate("gui.done")));
-
         this.buttonList.add(clearUriButton = new GuiButton(1, left + 220, top + 14, 17, 20, "X"));
+        this.buttonList.add(toggleQueueButton = new GuiButton(2, left + 10, top + 100, 80, 20, this.getQueueButtonString()));
         
         uriField = new GuiTextField(2, this.fontRenderer, left + 60, top + 17, 157, this.fontRenderer.FONT_HEIGHT + 5);
         initTextField(uriField, 100, uri);
@@ -111,6 +112,13 @@ public class GuiProjector extends GuiScreen {
             uriField.setText("");
             uriField.setFocused(true);
             uri = uriField.getText();
+        } else if (button.id == toggleQueueButton.id) {
+            MediaPlayer player = tile.getMediaPlayer();
+
+            boolean state = player.inQueueMode();
+            player.setQueueMode(!state);
+
+            toggleQueueButton.displayString = this.getQueueButtonString();
         }
     }
 
@@ -207,5 +215,11 @@ public class GuiProjector extends GuiScreen {
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    public String getQueueButtonString() {
+        String key = this.tile.getMediaPlayer().inQueueMode() ? "on" : "off";
+
+        return StringUtils.translate("gui.queue." + key);
     }
 }

@@ -49,6 +49,7 @@ public class ProjectorOptions extends AbstractBehavior {
                 mediaPlayer.setUri(update.getUri());
                 mediaPlayer.setWidth(update.getWidth());
                 mediaPlayer.setHeight(update.getHeight());
+                mediaPlayer.setQueueMode(update.isQueueMode());
                 range.setTriggerRange(update.getTriggerRange());
                 range.setFadeRange(update.getFadeRange());
 
@@ -70,6 +71,7 @@ public class ProjectorOptions extends AbstractBehavior {
         update.setHeight(height);
         update.setTriggerRange(triggerRange);
         update.setFadeRange(fadeRange);
+        update.setQueueMode(mediaPlayer.inQueueMode());
         firePayloadSend(new BehaviorPayload(BehaviorType.UPDATE, update), null);
     }
 
